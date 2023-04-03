@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  role     String
+}
+
+model owners {
+  id         Int      @id @default(autoincrement())
+  name       String
+  contact_id Int
+  contact    contacts @relation(fields: [contact_id], references: [id])
+  realty     realty[]
+}
+
+model addresses {
+  id           Int      @id @default(autoincrement())
+  address      String
+  number       Int
+  complement   String
+  neighborhood String
+  city_id      Int
+  state_id     Int
+  cep          Int
+  details      String
+  city         cities   @relation(fields: [city_id], references: [id])
+  state        states   @relation(fields: [state_id], references: [id])
+  realty       realty[]
+}
+
+model contacts {
+  id      Int      @id @default(autoincrement())
+  type    String
+  contact String
+  owners  owners[]
+}
+
+model cities {
+  id        Int         @id @default(autoincrement())
+  name      String
+  addresses addresses[]
+}
+
+model states {
+  id           Int         @id @default(autoincrement())
+  name         String
+  abbreviation String
+  addresses    addresses[]
+}
+
+model realty {
+  id          Int            @id @default(autoincrement())
+  type_id     Int
+  address_id  Int
+  details_id  Int
+  owner_id    Int
+  type        realty_types   @relation(fields: [type_id], references: [id])
+  address     addresses      @relation(fields: [address_id], references: [id])
+  details     realty_details @relation(fields: [details_id], references: [id])
+  owner       owners         @relation(fields: [owner_id], references: [id])
+  realty_tags realty_tags[]
+}
+
+model realty_types {
+  id     Int      @id @default(autoincrement())
+  type   String
+  realty realty[]
+}
+
+model realty_details {
+  id                  Int      @id @default(autoincrement())
+  dorms               Int
+  bathrooms           Int
+  livingrooms         Int
+  kitchen             Int
+  suites              Int
+  parking_spots       Int
+  total_area          Int
+  private_area        Int
+  land_size           Int
+  topography          String
+  sale_pricing        Float
+  rent_pricing        Float
+  condominium_pricing Float
+  tax                 Float
+  realty              realty[]
+}
+
+model realty_tags {
+  tag_id    Int
+  realty_id Int
+  tag       tags   @relation(fields: [tag_id], references: [id])
+  realty    realty @relation(fields: [realty_id], references: [id])
+
+  @@id([tag_id, realty_id])
+}
+
+model tags {
+  id          Int           @id @default(autoincrement())
+  name        String
+  realty_tags realty_tags[]
+}
