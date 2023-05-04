@@ -8,7 +8,8 @@ export default class UserRoute {
     this._router = Router();
   }
 
-  public _routes = (route = '/users'): void =>{
+  public _routes = (route = '/users'): void => {
     this._router.post(route, this.controller.createUser);
+    this._router.get(route, this.controller.getAllUsers);
   }
 }

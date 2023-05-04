@@ -1,4 +1,5 @@
 import express, { Router } from "express";
+import cors from 'cors';
 
 class App {
   readonly app: express.Application;
@@ -14,6 +15,7 @@ class App {
   }
 
   public addRouter(router: Router) {
+    this.app.use(cors());
     this.app.use(express.json());
     this.app.use(router);
   }
