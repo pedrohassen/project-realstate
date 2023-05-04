@@ -8,7 +8,7 @@ export default class UsersModel {
     this._prisma = new PrismaClient();
   }
 
-  public async createUser({ name, email, password, role }: IUsers): Promise<users> {
+  public createUser = async ({ name, email, password, role }: IUsers): Promise<users> => {
     return await this._prisma.users.create({
       data: {
         name,
@@ -17,5 +17,9 @@ export default class UsersModel {
         role
       }
     });
+  }
+
+  public getAllUsers = async (): Promise<IUsers[]> => {
+    return await this._prisma.users.findMany();
   }
 }
